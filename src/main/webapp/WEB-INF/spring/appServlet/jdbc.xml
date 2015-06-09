@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		">
+	<!-- 身份库设置 -->
+	<bean id="iddbuserDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@172.16.174.21:1521:syntong" /> <!-- 需修改 -->
+		<property name="username" value="iddbuser" /><!--  需要修改 -->
+		<property name="password" value="idpasswd" /> <!-- 需要修改 -->
+		<property name="idleConnectionTestPeriod" value="60" />
+		<property name="idleMaxAge" value="240" />
+		<property name="maxConnectionsPerPartition" value="30" />
+		<property name="minConnectionsPerPartition" value="10" />
+		<property name="partitionCount" value="3" />
+		<property name="acquireIncrement" value="5" />
+		<property name="statementsCacheSize" value="100" />
+		<property name="releaseHelperThreads" value="3" />
+	</bean>
+	
+	<!-- <bean id="schoolDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@172.16.174.21:1521:syntong" />
+		<property name="username" value="school" />
+		<property name="password" value="school_password" />
+		<property name="idleConnectionTestPeriod" value="60" />
+		<property name="idleMaxAge" value="240" />
+		<property name="maxConnectionsPerPartition" value="30" />
+		<property name="minConnectionsPerPartition" value="10" />
+		<property name="partitionCount" value="3" />
+		<property name="acquireIncrement" value="5" />
+		<property name="statementsCacheSize" value="100" />
+		<property name="releaseHelperThreads" value="3" />
+	</bean> -->
+
+	<bean id="jdbc_iddbuser" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="iddbuserDataSource"/>
+    </bean>
+    <!-- <bean id="jdbc_school" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="schoolDataSource"/>
+    </bean>
+    <bean id="jdbc_test" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="testDataSource"/>
+    </bean> -->
+</beans>

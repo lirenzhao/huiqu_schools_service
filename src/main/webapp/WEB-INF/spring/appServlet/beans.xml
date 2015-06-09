@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+
+	<!-- 文件上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000" />
+	</bean>
+
+
+	<bean id="exceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<!-- 处理上传文件超大的异常 改用 UploadExceptionResolve 处理 -->
+				<!-- <prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">error/maxUploadExceeded</prop> -->
+
+				<!-- 处理未登录，触发异常处理 -->
+				<prop key="com.huiqu.interceptor.AuthorizationException">/login/login</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/*" />
+			<bean class="com.huiqu.interceptor.LoginHandlerInterceptor">
+				<property name="excludedUrls"> <!-- 无需拦截的例外列表 -->
+					<list>
+						<value>/login</value>
+						<value>/service</value>
+						<value>/</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:interceptor>
+		<mvc:interceptor>
+		    <mvc:mapping path="/service"/>
+		    <bean class="com.huiqu.interceptor.ServiceHandlerInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+
+</beans>

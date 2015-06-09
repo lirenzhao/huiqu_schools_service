@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<bean id="user" class="com.huiqu.jdbc.User">
+		<property name="select"
+			value="SELECT TRIM(A.SNO) NO,TRIM(A.NAME) NAME,(CASE SEX WHEN '1' THEN '男' WHEN '2' THEN '女' ELSE '其他' END)SEX ,P.NAME DUTY,GET_FULL_DEPTNAME(A.DEPTCODE) DEPT,TO_CHAR(EXPDATE,'YYYY-MM-DD')  BIRTHDAY,A.QUERYPIN PASSWD,ACCOUNT FROM ACCOUNT A,PID P WHERE  P.CODE = A.PID AND TRIM(A.SNO) = ? AND QUERYPIN=?" />
+	</bean>
+
+	<bean id="Histrjn" class="com.huiqu.jdbc.HisTrjn">
+	    <property name="monthSql" 
+	        value="
+	        select to_char(effectdate,'DD') effectdate,trancode,count(*) count ,to_char(round(sum(tranamt) / 100,2),'FM9999999999999999.00') as  amt from %s  where fromaccount = ? and trancode&lt;&gt;'16' group by trancode,to_char(effectdate,'DD') order by effectdate">
+	    </property>
+	</bean>
+	<bean id="trjn" class="com.huiqu.jdbc.Trjn">
+	    <property name="sql" value="select w.FROMJNNUMBER jnum,NVL(trim(m.mercname),' ')merc,trim(tc.tranname) tran,w.trancode,to_char(w.JNDATETIME'HH24:MI:SS') EFFECTDATE,to_char(round(w.tranamt / 100,2),'FM9999999999999999.00') as  amt from trjn w,trcd tc,mercacc m WHERE w.FROMACCOUNT = ? and tc.trancode = w.trancode and m.account(+) = w.toaccount order by w.JNDATETIME"></property>
+	</bean>
+	
+	<bean id="account" class="com.huiqu.jdbc.Account">
+	    <property name="sql" value="select account,trim(sno),to_char(round(cardbalance / 100,2),'FM9999999999999999.00') as cardbalance from account where account=?"></property>
+	</bean>
+</beans>
